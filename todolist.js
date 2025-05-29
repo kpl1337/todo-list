@@ -10,8 +10,8 @@ let button = document.getElementById('button');
 
 refresh = function() {
     // clear the previous list contents to prevent duplicates
-    unfinished.innerHTML = '';
-    finished.innerHTML = '';
+    unfinished.innerHTML = '<p>unfinished:</p>';
+    finished.innerHTML = '<p>finished:</p>';
 
     // iterate through each array member
     for (let i = 1; i <= unfinishedList.length; i++)
@@ -19,7 +19,6 @@ refresh = function() {
         // create parent element which will hold text and button, apply styles
         const parent = document.createElement('div');
         parent.className = 'item';
-        parent.style = 'display: flex; flex-direction: row; justify-content: space-between;'
         parent.style.borderRadius = i == 1 ? '10px 10px 0px 0px' : '0px';
 
         // create a 'p' element and assign it its corresponding text
@@ -27,15 +26,16 @@ refresh = function() {
         p.textContent = `${i}. ${unfinishedList[i-1]}`;        
         
         // create a button which moves item into the 'finished' list
-        const a = document.createElement('button');
-        a.id = `${i}`;
-        a.textContent = 'done';
-        a.onclick = () => {
+        const button = document.createElement('button');
+        button.id = `${i}`;
+        button.className = 'remove-button'
+        button.textContent = 'done';
+        button.onclick = () => {
             addToFinished(i);
             refresh();
         };
 
-        parent.append(p,a);        
+        parent.append(p,button);        
         // append the text and button to the parent
 
         unfinished.appendChild(parent);
@@ -58,6 +58,7 @@ refresh = function() {
         // create a button which moves item into the 'finished' list
         const button = document.createElement('button');
         button.id = `${i}`;
+        button.className = 'remove-button'
         button.textContent = 'remove';
         button.onclick = () => {
             removeFromFinished(i-1);
@@ -102,3 +103,6 @@ button.addEventListener('click', (e) => {
     addToUnfinished();
     refresh();
 });
+
+// refresh upon website load
+refresh();

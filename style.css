@@ -13,7 +13,7 @@ section {
 }
 
 button {
-    padding: 3px;
+    padding: 3px 6px;
     border-radius: 6px;
     color: white;
     background-color: #444;
@@ -22,7 +22,7 @@ button {
 }
 
 button:hover {
-    background-color: #a0a0a0;
+    background-color: #3a3a3a;
 }
 
 button:active {
@@ -31,11 +31,14 @@ button:active {
 }
 
 .item {
+    display: flex; 
+    flex-direction: row; 
+    justify-content: space-between;
     border: 1px dotted #b0b0b0;
-    display: block;
-    justify-content: left;
     align-items: center;
     box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.15);
+    transition: opacity 0.2s ease-in-out;
+    position: relative;
 }
 
 .two-columns {
@@ -49,4 +52,16 @@ button:active {
     width: 350px;
     border: 1px solid #b0b0b0;
     border-radius: 15px;
+}
+
+.item:has(.remove-button:hover) {
+    opacity: 0.3;
+}
+
+.item:has(.remove-button:active) {
+    opacity: 0.1;
+}
+
+.remove-button:hover {
+    opacity: 1;
 }
