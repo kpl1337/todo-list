@@ -1,6 +1,7 @@
 // declare lists
 let finishedList = [];
 let unfinishedList = [];
+let savedTasks = [];
 
 // declare existing html elements
 let unfinished = document.getElementById('unfinished');
@@ -61,7 +62,7 @@ refresh = function() {
         button.className = 'remove-button'
         button.textContent = 'remove';
         button.onclick = () => {
-            removeFromFinished(i-1);
+            removeTask(i-1);
             refresh();
         };
 
@@ -76,10 +77,10 @@ refresh = function() {
 function addToUnfinished() {
     // check if the 'goal' isn't already in 'unfinished list'
     // and if the 'goal' isn't empty
-
     if (!unfinishedList.includes(goal.value) && goal.value !== "") {
         // add 'goal' into 'unfinished' list
         unfinishedList.push(goal.value);
+        saveTasks();
     }
 };
 
@@ -88,12 +89,27 @@ function addToFinished(index) {
     if (item) {
         finishedList.push(item);
         unfinishedList.splice(index - 1, 1);
+        saveTasks();
     }
 }
 
 // removes item from finished list.
-function removeFromFinished(index) {
+function removeTask(index) {
     finishedList.splice(index, 1);
+}
+
+function saveTasks() {
+    localStorage.setItem('unfinished_tasks', JSON.stringify(unfinishedList));
+}
+
+function loadTasks() {
+    const saved = localStorage.getItem('unfinished_tasks');
+    if (saved) {
+        tasks = JSON.parse(saved);
+        for (let i = 0; i < tasks.length; i++) {
+            unfinishedList.push(tasks[i]);
+        }
+    }   
 }
 
 // add a 'click' event listener for 
@@ -102,7 +118,11 @@ function removeFromFinished(index) {
 button.addEventListener('click', (e) => {
     addToUnfinished();
     refresh();
+    goal.value = ''; // clear input 
 });
 
-// refresh upon website load
-refresh();
+// load stored tasks and refresh lists upon website load
+document.addEventListener('DOMContentLoaded', function() {
+    loadTasks();
+    refresh();
+});

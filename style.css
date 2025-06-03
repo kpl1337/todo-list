@@ -18,7 +18,7 @@ button {
     color: white;
     background-color: #444;
     border: 1px solid transparent;
-    transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
 }
 
 button:hover {
@@ -28,17 +28,29 @@ button:hover {
 button:active {
     color: black;
     background-color: #dfdfdf;
+    border-color: black;
+}
+
+
+.container {
+    display: block;
+    background-color: #eee; 
+    max-width: fit-content;
+    padding: 10px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .item {
     display: flex; 
     flex-direction: row; 
     justify-content: space-between;
-    border: 1px dotted #b0b0b0;
+    border: 1px dotted #444;
     align-items: center;
     box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.15);
     transition: opacity 0.2s ease-in-out;
     position: relative;
+    background-color: #b0b0b0;
 }
 
 .two-columns {
@@ -52,16 +64,18 @@ button:active {
     width: 350px;
     border: 1px solid #b0b0b0;
     border-radius: 15px;
+    background-color: #dfdfdf;
 }
 
 .item:has(.remove-button:hover) {
-    opacity: 0.3;
+    opacity: 0.5;
 }
 
 .item:has(.remove-button:active) {
-    opacity: 0.1;
+    opacity: 0.2;
 }
 
 .remove-button:hover {
     opacity: 1;
+    background-color: rgba(200,20,20, 1);
 }
