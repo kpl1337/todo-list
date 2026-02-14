@@ -1,80 +1,77 @@
 // declare lists
-let finishedList = [];
-let unfinishedList = [];
-let savedTasks = [];
+const finishedList = [];
+const unfinishedList = [];
 
 // declare existing html elements
-let unfinished = document.getElementById('unfinished');
-let finished = document.getElementById('finished');
-let goal = document.getElementById('goal');
-let button = document.getElementById('button');
+const unfinished = document.getElementById('unfinished');
+const finished = document.getElementById('finished');
+const goal = document.getElementById('goal');
+const button = document.getElementById('button');
 
-refresh = function() {
+const refresh = () => {
     // clear the previous list contents to prevent duplicates
     unfinished.innerHTML = '<p>unfinished:</p>';
     finished.innerHTML = '<p>finished:</p>';
 
     // iterate through each array member
-    for (let i = 1; i <= unfinishedList.length; i++)
+    for (let i = 0; i < unfinishedList.length; i++)
     {
         // create parent element which will hold text and button, apply styles
         const parent = document.createElement('div');
         parent.className = 'item';
-        parent.style.borderRadius = i == 1 ? '10px 10px 0px 0px' : '0px';
 
         // create a 'p' element and assign it its corresponding text
         const p = document.createElement('p');
-        p.textContent = `${i}. ${unfinishedList[i-1]}`;        
+        p.textContent = `${i}. ${unfinishedList[i]}`;        
         
         // create a button which moves item into the 'finished' list
-        const button = document.createElement('button');
-        button.id = `${i}`;
-        button.className = 'remove-button'
-        button.textContent = 'done';
-        button.onclick = () => {
+        const moveButton = document.createElement('button');
+        moveButton.id = `${i}`;
+        moveButton.className = 'remove-button'
+        moveButton.textContent = 'done';
+        moveButton.onclick = () => {
             addToFinished(i);
             refresh();
         };
 
-        parent.append(p,button);        
         // append the text and button to the parent
+        parent.append(p, moveButton);        
 
-        unfinished.appendChild(parent);
         // append parent to 'unfinished' list
+        unfinished.appendChild(parent);
     }
 
-    // iterate through each array member again, but for 'finished list'
-    for (let i = 1; i <= finishedList.length; i++)
+    // iterate through each array member again, but this time for 'finished list'
+    for (let i = 0; i < finishedList.length; i++)
     {
-        // create parent element which will hold text and button, apply styles
+        // create a parent element which will hold text and button, apply styles
         const parent = document.createElement('div');
         parent.className = 'item';
-        parent.style = 'display: flex; flex-direction: row; justify-content: space-between;'
-        parent.style.borderRadius = i == 1 ? '10px 10px 0px 0px' : '0px';
 
         // create a 'p' element and assign it its corresponding text
         const p = document.createElement('p');
-        p.textContent = finishedList[i-1];
+        p.textContent = finishedList[i];
         
-        // create a button which moves item into the 'finished' list
-        const button = document.createElement('button');
-        button.id = `${i}`;
-        button.className = 'remove-button'
-        button.textContent = 'remove';
-        button.onclick = () => {
-            removeTask(i-1);
+        // create a button which removes item from the 'finished' list
+        // and add corresponding styling to it
+        const removeButton = document.createElement('button');
+        removeButton.id = `${i}`;
+        removeButton.className = 'remove-button'
+        removeButton.textContent = 'remove';
+        removeButton.onclick = () => {
+            removeTask(i);
             refresh();
         };
 
-        parent.append(p, button);
         // append the text and button to the parent
+        parent.append(p, removeButton);
 
-        finished.appendChild(parent);
         // append parent to 'unfinished' list
+        finished.appendChild(parent);
     }
 }
 
-function addToUnfinished() {
+const addToUnfinished = () => {
     // check if the 'goal' isn't already in 'unfinished list'
     // and if the 'goal' isn't empty
     if (!unfinishedList.includes(goal.value) && goal.value !== "") {
@@ -82,32 +79,48 @@ function addToUnfinished() {
         unfinishedList.push(goal.value);
         saveTasks();
     }
+    refresh();
 };
 
-function addToFinished(index) {
-    const item = unfinishedList[index - 1];
+// move task to the finished list
+const addToFinished = (index) => {
+    const item = unfinishedList[index];
     if (item) {
+        // add task to finished list
         finishedList.push(item);
-        unfinishedList.splice(index - 1, 1);
+        // remove task from unfinished list
+        unfinishedList.splice(index, 1);
+        // save tasks into localStorage
         saveTasks();
     }
 }
 
 // removes item from finished list.
-function removeTask(index) {
+const removeTask = (index) => {
     finishedList.splice(index, 1);
+    saveTasks();
 }
 
-function saveTasks() {
+// saves both finished and unfinished tasks to local storage
+const saveTasks = () => {
     localStorage.setItem('unfinished_tasks', JSON.stringify(unfinishedList));
+    localStorage.setItem('finished_tasks', JSON.stringify(finishedList));
 }
 
-function loadTasks() {
-    const saved = localStorage.getItem('unfinished_tasks');
-    if (saved) {
-        tasks = JSON.parse(saved);
-        for (let i = 0; i < tasks.length; i++) {
-            unfinishedList.push(tasks[i]);
+// loads finished and unfinished tasks from local storage, if there's any to load
+const loadTasks = () => {
+    const savedUnfinished = localStorage.getItem('unfinished_tasks');
+    const savedFinished = localStorage.getItem('finished_tasks');
+    if (savedUnfinished) {
+        const unfinishedTasks = JSON.parse(savedUnfinished);
+        for (let i = 0; i < unfinishedTasks.length; i++) {
+            unfinishedList.push(unfinishedTasks[i]);
+        }
+    }   
+    if (savedFinished) {
+        const finishedTasks = JSON.parse(savedFinished);
+        for (let i = 0; i < finishedTasks.length; i++) {
+            finishedList.push(finishedTasks[i]);
         }
     }   
 }
@@ -117,8 +130,7 @@ function loadTasks() {
 // goal to the unfinished list and refresh. 
 button.addEventListener('click', (e) => {
     addToUnfinished();
-    refresh();
-    goal.value = ''; // clear input 
+    goal.value = ''; // clear input
 });
 
 // load stored tasks and refresh lists upon website load

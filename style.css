@@ -53,6 +53,18 @@ button:active {
     background-color: #b0b0b0;
 }
 
+.item:only-child {
+    border-radius: 10px 10px 10px 10px;
+}
+
+.item:first-child {
+    border-radius: 10px 10px 0 0;
+}
+
+.item:last-child {
+    border-radius: 0 0 10px 10px;
+}
+
 .two-columns {
     margin: 0;
     display: flex;
